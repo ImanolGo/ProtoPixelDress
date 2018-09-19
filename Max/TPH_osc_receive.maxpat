@@ -81,7 +81,8 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 303.0, 289.0, 149.0, 22.0 ],
-					"style" : ""
+					"style" : "",
+					"text" : "/tph/touched 0"
 				}
 
 			}

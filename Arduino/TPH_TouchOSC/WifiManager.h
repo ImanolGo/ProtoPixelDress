@@ -15,7 +15,9 @@
 #include "Arduino.h"
 #include <WiFi.h>
 #include <WiFiUdp.h>
-#include <ArduinoOSC.h>
+#include <OSCMessage.h>
+#include <OSCBundle.h>
+#include <OSCData.h>
 
 #define DISCOVERY_TIMER 3000
 #define WIFI_TIMEOUT 3000              // checks WiFi every ...ms. Reset after this time, if WiFi cannot reconnect.
@@ -25,7 +27,8 @@
 
 //The udp library class
 
-String ip;
+WiFiUDP udp;
+IPAddress ipSend;
 bool wifiConnected = false;
 bool is_connected = false;
 
@@ -51,19 +54,15 @@ class WifiManager
   private:
 
     void initializeWifi();
-    void initializeOSC();
-    
+   
     void parseOsc();
     void connectToWiFi(const char * ssid, const char * pwd);
     void sendAutodiscovery();
-
-    String getIpString(IPAddress& _ip);
    
     String ssid;
     String pass;
    
-    WiFiUDP udp;
-    ArduinoOSCWiFi osc;
+
     unsigned long autodiscovery_timer;
     bool _touched;
     
@@ -93,7 +92,6 @@ void WifiManager::setup()
 {
     Serial.println("WifiManager::setup");
     initializeWifi();
-    initializeOSC();
 }
 
 void WifiManager::initializeWifi()
@@ -102,23 +100,17 @@ void WifiManager::initializeWifi()
     connectToWiFi(ssid.c_str(), pass.c_str());
 }
 
-void WifiManager::initializeOSC()
-{
-     osc.begin(udp, LOCAL_PORT);
-     osc.addCallback("/tph/autodiscovery", &callbackAutodiscovery);
-}
-
 void WifiManager::callbackAutodiscovery(OSCMessage& m)
 { 
     Serial.println("WifiManager:got autodiscovery!!");
     is_connected = true;
-    ip = String(m.getIpAddress());
-    ip = "192.168.178.20";
+    ipSend = udp.remoteIP();
+    //ipSend = "192.168.178.20";
 
     //const char* ipAddress = m.getIpAddress();
     
     Serial.print("WifiManager:callbackAutodiscovery: sending to: ");
-    Serial.println(ip);
+    Serial.println(ipSend);
 }
 
 
@@ -131,7 +123,24 @@ void WifiManager::update()
 
 void WifiManager::parseOsc()
 {
-    osc.parse();
+    if (!wifiConnected) return;
+    
+    int size = udp.parsePacket();
+    if (size > 0) {
+      OSCMessage msg;
+      while (size--) {
+         msg.fill(udp.read());
+      }
+      if (!msg.hasError()) {
+        msg.dispatch("/tph/autodiscovery", callbackAutodiscovery);
+      } else {
+        OSCErrorCode error = msg.getError();
+        Serial.print("WifiManager::parseOsc-> Error: ");
+        Serial.println(error);
+      }
+      
+    }
+
 }
 
 
@@ -167,6 +176,7 @@ void WifiManager::WiFiEvent(WiFiEvent_t event){
   
           Serial.print("WifiManager::Listening to port: ");
           Serial.println(LOCAL_PORT); 
+          udp.begin(LOCAL_PORT);
           wifiConnected = true;
           break;
       case SYSTEM_EVENT_STA_DISCONNECTED:
@@ -182,34 +192,37 @@ void WifiManager::sendTouched(int i)
 {
      if(!is_connected) return;
 
-      OSCMessage msg;
-      msg.beginMessage(ip.c_str(), SEND_PORT);
-      msg.setOSCAddress("/tph/touched");
-      msg.addArgInt32(i);
-      osc.send(msg);
+     OSCMessage msg("/tph/touched");
+     msg.add(i);
+     udp.beginPacket(ipSend, SEND_PORT);
+     msg.send(udp);
+     udp.endPacket();
+     msg.empty();
+    
+
+//      OSCMessage msg;
+//      msg.beginMessage(ip.c_str(), SEND_PORT);
+//      msg.setOSCAddress("/tph/touched");
+//      msg.addArgInt32(i);
+//      osc.send(msg);
 }
 
 void WifiManager::sendReleased(int i)
 {
     if(!is_connected) return;
 
-      OSCMessage msg;
-      msg.beginMessage(ip.c_str(), SEND_PORT);
-      msg.setOSCAddress("/tph/released");
-      msg.addArgInt32(i);
-      osc.send(msg);
-}
+     OSCMessage msg("/tph/released");
+     msg.add(i);
+     udp.beginPacket(ipSend, SEND_PORT);
+     msg.send(udp);
+     udp.endPacket();
+     msg.empty();
 
-String WifiManager::getIpString(IPAddress& _ip)
-{
-    String str = String(_ip[0]);
-    str += ".";
-    str += String(_ip[1]);
-    str += ".";
-    str += String(_ip[2]);
-    str += ".";
-    str += String(_ip[3]);
-    return str;
+//      OSCMessage msg;
+//      msg.beginMessage(ip.c_str(), SEND_PORT);
+//      msg.setOSCAddress("/tph/released");
+//      msg.addArgInt32(i);
+//      osc.send(msg);
 }
 
 void WifiManager::sendAutodiscovery()

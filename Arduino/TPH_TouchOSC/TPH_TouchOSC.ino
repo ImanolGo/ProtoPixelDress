@@ -6,7 +6,7 @@
 
  Software:
  * Adafruit_MPR121 Library - https://github.com/adafruit/Adafruit_MPR121
- * Modified ArduinoOSC
+ * CNMAT/OSC - https://github.com/CNMAT/OSC
  
  Hardware:
 * MPR121 12-channel Capacitive touch sensor
