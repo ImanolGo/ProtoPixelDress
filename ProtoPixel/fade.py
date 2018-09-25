@@ -38,7 +38,8 @@ class Fade:
         
     def updateColor(self):
         angle = ofGetElapsedTimef()*1.7
-        self.color.a = int(255.0*((math.sin(angle)+1.2)*0.5))
+        brightness = int(255.0*((math.sin(angle)+1.0)*0.5))
+        self.color.a = brightness
         #print self.color.a
 
     def setColor(self, color):

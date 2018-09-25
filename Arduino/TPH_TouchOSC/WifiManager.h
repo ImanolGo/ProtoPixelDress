@@ -186,6 +186,8 @@ void WifiManager::WiFiEvent(WiFiEvent_t event){
           Serial.println(LOCAL_PORT); 
           udp.begin(LOCAL_PORT);
           wifiConnected = true;
+          ipSend = WiFi.localIP();
+          ipSend[3] = 255;
           break;
       case SYSTEM_EVENT_STA_DISCONNECTED:
           Serial.println("WifiManager::WiFi lost connection");
@@ -206,6 +208,8 @@ void WifiManager::WiFiEvent(WiFiEvent_t event){
           Serial.println(LOCAL_PORT); 
           udp.begin(LOCAL_PORT);
           wifiConnected = true;
+          ipSend = WiFi.localIP();
+          ipSend[3] = 255;
           break;
       case WIFI_EVENT_STAMODE_DISCONNECTED:
           Serial.println("WifiManager::WiFi lost connection");
@@ -220,7 +224,7 @@ void WifiManager::WiFiEvent(WiFiEvent_t event){
 
 void WifiManager::sendTouched(int i)
 {
-     if(!is_connected) return;
+    // if(!is_connected) return;
 
      OSCMessage msg("/tph/touched");
      msg.add(i);
@@ -239,7 +243,7 @@ void WifiManager::sendTouched(int i)
 
 void WifiManager::sendReleased(int i)
 {
-    if(!is_connected) return;
+    //if(!is_connected) return;
 
      OSCMessage msg("/tph/released");
      msg.add(i);

@@ -3,7 +3,7 @@ import os.path
 from tempfile import mkdtemp
         
 
-class Sparkles:
+class Waves:
 
     def __init__(self, width, height):
 
@@ -31,6 +31,7 @@ class Sparkles:
         self.fbo.end()
 
     def draw(self):
+
         self.fbo.draw(0,0)
         #self.drawShader()
 
@@ -43,8 +44,9 @@ class Sparkles:
         if self.shader.isLoaded():
             self.shader.begin()
             self.shader.setUniform3f('iColor', r,g,b)
-            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.5)
+            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.2)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
+            self.shader.setUniform1f('inoise_grain', 0.7)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
             #self.fbo.draw(0,0)
        
@@ -76,68 +78,72 @@ class Sparkles:
 
 
         self.frag_contents_prefix = """
-          #version 150
-          out vec4 outputColor;
-          uniform vec3 iResolution;
-          uniform float iGlobalTime;
-          uniform int iparticles_direction;
+        #version 150
+        out vec4 outputColor;
+        uniform vec3 iResolution;
+        uniform float iGlobalTime;
+        uniform float inoise_grain;
 
-          in vec4 position_frag;
+        in vec4 position_frag;
           """
 
 
         self.frag_contents = """
-         // This code can be found in 
-        // https://www.shadertoy.com/view/MscXD7
-        // and it's property of its creator.
-        // This is distributed for illustration purposes only.
+            // This code can be found in 
+            // https://www.shadertoy.com/view/Ms3SWs
+            // and it's property of its creator.
+            // This is distributed for illustration purposes only.
 
-        #define _SnowflakeAmount 500    // Number of snowflakes
-        #define _BlizardFactor 0.2      // Fury of the storm !
+            uniform vec3 iColor = vec3(1.0,1.0,1.0);
 
-        vec2 uv;
-        uniform vec3 iColor = vec3(1.0,1.0,1.0);
-
-        float rnd(float x)
-        {
-            return fract(sin(dot(vec2(x+47.49,38.2467/(x+2.3)), vec2(12.9898, 78.233)))* (43758.5453));
-        }
-
-        float drawCircle(vec2 center, float radius)
-        {
-            return 1.0 - smoothstep(0.0, radius, length(uv - center));
-        }
-
-
-        void mainImage( out vec4 fragColor, in vec2 fragCoord )
-        {
-            float invAr = iResolution.y / iResolution.x;
-
-            if(iparticles_direction>1){
-                uv = fragCoord.xy / iResolution.x;
-            }
-            else{
-                uv = fragCoord.yx / iResolution.x;
-            }
-           
-            fragColor = vec4(0, 0, 0, 1.0);
-            float j;
-            vec4 texColor = vec4(iColor, 1.0);
-            
-            for(int i=0; i<_SnowflakeAmount; i++)
+            float hash(vec2 p)
             {
-                j = float(i);
-                float speed = 0.3+rnd(cos(j))*(0.7+0.5*cos(j/(float(_SnowflakeAmount)*0.25)));
-                vec2 center = vec2((0.25-uv.y)*_BlizardFactor+rnd(j)+0.1*cos(iGlobalTime+sin(j)), mod(sin(j)-speed*(iGlobalTime*1.5*(0.1+_BlizardFactor)), 1.0));
-                
-                if(iparticles_direction%2 == 0){
-                    center = 1-center;
-                }
-
-                fragColor += (vec4(drawCircle(center, 0.001+speed*0.012))*texColor);
+                vec3 p3  = fract(vec3(p.xyx) * 0.1031);
+                p3 += dot(p3, p3.yzx + 19.19);
+                return fract((p3.x + p3.y) * p3.z);
             }
-        }
 
+            float ang(vec2 uv, vec2 center){
+                return atan((uv.y-center.y),(uv.x-center.x));
+            }
+
+            float spir(vec2 uv, vec2 loc){
+                float dist1=length(uv-loc);
+                float dist2=dist1*dist1;
+                float layer6=sin((ang(uv,loc)+dist2-iGlobalTime)*6.0);
+                layer6 = layer6*dist1;
+                return layer6;
+            }
+
+            float ripl(vec2 uv, vec2 loc, float speed, float frequency){
+                return sin(iGlobalTime*speed-length(uv-loc)*frequency);
+            }
+
+            float height(in vec2 uv){
+                float layer1=sin(iGlobalTime*8.54-inoise_grain*sin(length(uv-vec2(-0.41,-0.47)))*55.0);
+                float layer2=sin(iGlobalTime*7.13-inoise_grain*sin(length(uv-vec2(1.35,1.32)))*43.0);
+                float layer3=sin(iGlobalTime*7.92-inoise_grain*sin(length(uv-vec2(-0.34,1.28)))*42.5);
+                float layer4=sin(iGlobalTime*6.71-inoise_grain*sin(length(uv-vec2(1.23,-0.24)))*47.2);
+
+                float spiral=spir(uv,vec2(0.5,0.5));
+                spiral*=3.0;
+                
+                float temp = layer1+layer2+layer3+layer4+spiral;
+                
+                float b=smoothstep(-1.5,7.0,temp);
+                return b*2.0;
+            }
+
+            void mainImage( out vec4 fragColor, in vec2 fragCoord )
+            {
+                vec2 uv=fragCoord.xy/iResolution.x;
+                
+                float waveHeight=0.02+height(uv);
+                
+                vec3 color=vec3(waveHeight*iColor.r,waveHeight*iColor.g,waveHeight*iColor.b);
+                
+                fragColor = vec4( color, 1.0 );
+            }
         """
 
         self.frag_contents_suffix = """

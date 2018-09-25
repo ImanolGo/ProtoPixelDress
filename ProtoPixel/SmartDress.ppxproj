@@ -4,7 +4,6 @@
         <workspace>
             <name>root</name>
             <items>
-                <item>content:SmartDress.png</item>
                 <item>content:color</item>
                 <item>fixture:line</item>
                 <item>fixture:line 0</item>
@@ -62,11 +61,7 @@
                 <item>fixture:line2 25</item>
                 <item>fixture:line2 26</item>
                 <item>content:connectWifi.py</item>
-                <item>content:Noise.py</item>
-                <item>content:TestVideo.mov</item>
-                <item>content:SnowFlakes.py</item>
-                <item>content:SquareAnimation_.py</item>
-                <item>content:GrowingCircles.py</item>
+                <item>content:main.py</item>
             </items>
             <parameters>
                 <is_3D type="bool">0</is_3D>
@@ -1012,28 +1007,10 @@
     </fixtures>
     <contents>
         <content>
-            <name>SmartDress.png</name>
-            <type>py:image</type>
-            <parameters>
-                <enabled type="bool">0</enabled>
-                <blend_mode type="stringoption">alpha</blend_mode>
-                <color_levels type="color">255, 255, 255, 255</color_levels>
-                <projection_type type="stringoption">flatsimple</projection_type>
-                <projection_parameters>
-                    <width type="float">1</width>
-                    <height type="float">1</height>
-                </projection_parameters>
-                <params>
-                    <image_path type="filepath">$PROJECT_DIR/SmartDress.png</image_path>
-                </params>
-            </parameters>
-            <transformation type="matrix4x4"> 1.59213,        0,        0,        0&#x0A;       0,  1.24505,        0,        0&#x0A;       0,        0,        1,        0&#x0A;0.00131997,        0,        0,        1</transformation>
-        </content>
-        <content>
             <name>color</name>
             <type>py:color</type>
             <parameters>
-                <enabled type="bool">1</enabled>
+                <enabled type="bool">0</enabled>
                 <blend_mode type="stringoption">alpha</blend_mode>
                 <color_levels type="color">255, 255, 255, 255</color_levels>
                 <projection_type type="stringoption">flatsimple</projection_type>
@@ -1082,32 +1059,10 @@
             <transformation type="matrix4x4">     0.2,        0,        0,        0&#x0A;       0,      0.2,        0,        0&#x0A;       0,        0,        1,        0&#x0A;-1.00972, 0.699297,        0,        1</transformation>
         </content>
         <content>
-            <name>TestVideo.mov</name>
-            <type>py:video</type>
-            <parameters>
-                <enabled type="bool">0</enabled>
-                <blend_mode type="stringoption">alpha</blend_mode>
-                <color_levels type="color">255, 255, 255, 255</color_levels>
-                <projection_type type="stringoption">flatsimple</projection_type>
-                <projection_parameters>
-                    <width type="float">1</width>
-                    <height type="float">1</height>
-                </projection_parameters>
-                <params>
-                    <video_path type="filepath">/Users/imanolgo/Desktop/videos/TestVideo.mov</video_path>
-                    <position type="float">0.992114</position>
-                    <loop type="bool">1</loop>
-                    <autoplay type="bool">1</autoplay>
-                    <volume type="float">1</volume>
-                </params>
-            </parameters>
-            <transformation type="matrix4x4"> 1.56575,        0,        0,        0&#x0A;       0,  1.26043,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
-        </content>
-        <content>
-            <name>Noise.py</name>
+            <name>main.py</name>
             <type>PythonProgram</type>
             <parameters>
-                <enabled type="bool">0</enabled>
+                <enabled type="bool">1</enabled>
                 <blend_mode type="stringoption">alpha</blend_mode>
                 <color_levels type="color">255, 255, 255, 255</color_levels>
                 <projection_type type="stringoption">flatsimple</projection_type>
@@ -1115,95 +1070,17 @@
                     <width type="float">1</width>
                     <height type="float">1</height>
                 </projection_parameters>
-                <python_script type="filepath">$PROJECT_DIR/Noise.py</python_script>
+                <python_script type="filepath">$PROJECT_DIR/main.py</python_script>
                 <params>
-                    <color1 type="color">16, 72, 187, 255</color1>
-                    <color2 type="color">31, 140, 177, 255</color2>
-                    <color3 type="color">37, 55, 160, 255</color3>
-                    <change_hue type="bool">1</change_hue>
-                    <color_speed type="float">0.1</color_speed>
-                    <speed type="float">0.1</speed>
-                    <noise_grain type="float">0.1</noise_grain>
-                    <stage_mode type="bool">0</stage_mode>
+                    <enableSparkles type="bool">0</enableSparkles>
+                    <enableRainbow type="bool">1</enableRainbow>
+                    <enableFade type="bool">0</enableFade>
+                    <enableWaves type="bool">0</enableWaves>
+                    <enableCircles type="bool">0</enableCircles>
+                    <Color type="color">255, 255, 255, 255</Color>
                 </params>
             </parameters>
-            <transformation type="matrix4x4"> 1.67725,        0,        0,        0&#x0A;       0,  1.33104,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
-        </content>
-        <content>
-            <name>SnowFlakes.py</name>
-            <type>PythonProgram</type>
-            <parameters>
-                <enabled type="bool">0</enabled>
-                <blend_mode type="stringoption">alpha</blend_mode>
-                <color_levels type="color">255, 255, 255, 255</color_levels>
-                <projection_type type="stringoption">flatsimple</projection_type>
-                <projection_parameters>
-                    <width type="float">1</width>
-                    <height type="float">1</height>
-                </projection_parameters>
-                <python_script type="filepath">$PROJECT_DIR/SnowFlakes.py</python_script>
-                <params>
-                    <color1 type="color">39, 79, 255, 255</color1>
-                    <color2 type="color">255, 228, 36, 255</color2>
-                    <color3 type="color">42, 171, 255, 255</color3>
-                    <change_hue type="bool">0</change_hue>
-                    <color_speed type="float">0.1</color_speed>
-                    <speed type="float">0.5</speed>
-                    <particles_direction type="int">0</particles_direction>
-                    <stage_mode type="bool">0</stage_mode>
-                </params>
-            </parameters>
-            <transformation type="matrix4x4"> 1.75391,        0,        0,        0&#x0A;       0,  1.36937,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
-        </content>
-        <content>
-            <name>SquareAnimation_.py</name>
-            <type>PythonProgram</type>
-            <parameters>
-                <enabled type="bool">0</enabled>
-                <blend_mode type="stringoption">alpha</blend_mode>
-                <color_levels type="color">255, 255, 255, 255</color_levels>
-                <projection_type type="stringoption">flatsimple</projection_type>
-                <projection_parameters>
-                    <width type="float">1</width>
-                    <height type="float">1</height>
-                </projection_parameters>
-                <python_script type="filepath">$PROJECT_DIR/SquareAnimation_.py</python_script>
-                <params>
-                    <color1 type="color">255, 84, 243, 255</color1>
-                    <color2 type="color">255, 255, 255, 255</color2>
-                    <color3 type="color">255, 255, 255, 255</color3>
-                    <change_hue type="bool">0</change_hue>
-                    <color_speed type="float">0.1</color_speed>
-                    <speed type="float">0.2</speed>
-                    <stage_mode type="bool">0</stage_mode>
-                </params>
-            </parameters>
-            <transformation type="matrix4x4"> 1.84065,        0,        0,        0&#x0A;       0,  1.36171,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
-        </content>
-        <content>
-            <name>GrowingCircles.py</name>
-            <type>PythonProgram</type>
-            <parameters>
-                <enabled type="bool">0</enabled>
-                <blend_mode type="stringoption">alpha</blend_mode>
-                <color_levels type="color">255, 255, 255, 255</color_levels>
-                <projection_type type="stringoption">flatsimple</projection_type>
-                <projection_parameters>
-                    <width type="float">1</width>
-                    <height type="float">1</height>
-                </projection_parameters>
-                <python_script type="filepath">$PROJECT_DIR/GrowingCircles.py</python_script>
-                <params>
-                    <color1 type="color">35, 66, 255, 255</color1>
-                    <color2 type="color">77, 195, 21, 255</color2>
-                    <color3 type="color">250, 55, 255, 255</color3>
-                    <change_hue type="bool">1</change_hue>
-                    <color_speed type="float">0.1</color_speed>
-                    <speed type="float">0.2</speed>
-                    <stage_mode type="bool">0</stage_mode>
-                </params>
-            </parameters>
-            <transformation type="matrix4x4"> 1.71031,        0,        0,        0&#x0A;       0,  1.47671,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
+            <transformation type="matrix4x4"> 1.72549,        0,        0,        0&#x0A;       0,  1.24616,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
         </content>
     </contents>
     <groups></groups>
