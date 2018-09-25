@@ -28,8 +28,8 @@
 
 #define DISCOVERY_TIMER 3000
 #define WIFI_TIMEOUT 3000              // checks WiFi every ...ms. Reset after this time, if WiFi cannot reconnect.
-#define LOCAL_PORT 7000 
-#define SEND_PORT 7001 
+#define LOCAL_PORT 2346 
+#define SEND_PORT 2345 
 
 
 //The udp library class
