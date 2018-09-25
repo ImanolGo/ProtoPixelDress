@@ -27,10 +27,10 @@ uint16_t lasttouched = 0;
 uint16_t currtouched = 0;
 
 void setup() {
-  //while (!Serial);        // needed to keep leonardo/micro from starting too fast!
+  while (!Serial);        // needed to keep leonardo/micro from starting too fast!
 
- Serial.begin(115200);
-  //delay(1000);
+  Serial.begin(9600);
+  //delay(2000);
   Serial.println("Adafruit MPR121 Capacitive Touch sensor test"); 
   
   // Default address is 0x5A, if tied to 3.3V its 0x5B

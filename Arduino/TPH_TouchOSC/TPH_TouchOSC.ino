@@ -33,14 +33,15 @@ void setup() {
     delay(1000);
     Serial.println("Starting Software!!!!");
     
-    //capSensorManager.setup();
-    wifiManager.setup();
+     capSensorManager.setup();
+     //delay(1000);
+     wifiManager.setup();
 }
 
 void loop() 
 {
     wifiManager.update();
-    //capSensorManager.update();
+    capSensorManager.update();
     
   // put a delay so it isn't overwhelming
   //delay(10);

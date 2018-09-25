@@ -13,7 +13,14 @@
 
 #pragma once
 #include "Arduino.h"
-#include <WiFi.h>
+
+#ifdef ESP32
+  #include <WiFi.h>
+#else
+  #include <ESP8266WiFi.h>
+#endif
+  
+  
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
@@ -71,12 +78,9 @@ class WifiManager
 
 WifiManager::WifiManager()
 {
-  
-//    ssid = "TPH Operations";
-//    pass = "TheFUTURE!Sno3";
 
-    ssid = "Don't worry, be happy!";
-    pass = "whyistheskysohigh?";
+    ssid = "TPH Operations";
+    pass = "TheFUTURE!Sno3";
 
 //    ssid     =  "TP-LINK_54E4";
 //    pass = "27155332";
@@ -110,7 +114,9 @@ void WifiManager::callbackAutodiscovery(OSCMessage& m)
     //const char* ipAddress = m.getIpAddress();
     
     Serial.print("WifiManager:callbackAutodiscovery: sending to: ");
-    Serial.println(ipSend);
+    Serial.print(ipSend);
+    Serial.print(", port:  ");
+    Serial.println(SEND_PORT);
 }
 
 
@@ -165,8 +171,10 @@ void WifiManager::connectToWiFi(const char * ssid, const char * pwd){
 
 //wifi event handler
 void WifiManager::WiFiEvent(WiFiEvent_t event){
-    
+ 
     switch(event) {
+
+      #ifdef ESP32
       case SYSTEM_EVENT_STA_GOT_IP:
           //When connected set 
           Serial.print("WifiManager::WiFi connected! IP address: ");
@@ -184,6 +192,28 @@ void WifiManager::WiFiEvent(WiFiEvent_t event){
           wifiConnected = false;
           //software_Reset();
           break;
+
+        #else
+
+        case WIFI_EVENT_STAMODE_GOT_IP:
+           //When connected set 
+          Serial.print("WifiManager::WiFi connected! IP address: ");
+          Serial.println(WiFi.localIP());  
+          //initializes the UDP state
+          //This initializes the transfer buffer
+  
+          Serial.print("WifiManager::Listening to port: ");
+          Serial.println(LOCAL_PORT); 
+          udp.begin(LOCAL_PORT);
+          wifiConnected = true;
+          break;
+      case WIFI_EVENT_STAMODE_DISCONNECTED:
+          Serial.println("WifiManager::WiFi lost connection");
+          wifiConnected = false;
+          //software_Reset();
+          break;
+
+          #endif
     }
 }
 
@@ -225,24 +255,31 @@ void WifiManager::sendReleased(int i)
 //      osc.send(msg);
 }
 
+
 void WifiManager::sendAutodiscovery()
 {
-  //if(is_connected || !wifiConnected) return;
-
-  if (!wifiConnected) return;
-
-  if(!is_connected) return;
+  if(is_connected || !wifiConnected) return;
 
   if( millis() - autodiscovery_timer > DISCOVERY_TIMER)
   {
-      _touched = !_touched;
-
-      if(_touched){
-        this->sendTouched(0);
-      }
-      else{
-        this->sendReleased(0);
-      }
+//      _touched = !_touched;
+//
+//      if(_touched){
+//        this->sendTouched(0);
+//      }
+//      else{
+//        this->sendReleased(0);
+//      }
+      
+      IPAddress ip = WiFi.localIP();
+      ip[3] = 255;
+      
+       OSCMessage msg("/tph/autodiscovery");
+       msg.add(1);
+       udp.beginPacket(ip, SEND_PORT);
+       msg.send(udp);
+       udp.endPacket();
+       msg.empty();
 
       Serial.println("WifiManager::Autodiscovery sent!");
       autodiscovery_timer = millis();
