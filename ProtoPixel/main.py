@@ -1,5 +1,7 @@
 from openframeworks import *
 from protopixel import Content
+from tempfile import mkdtemp
+import os.path
 import imp
 
 content = Content("ProtoPixelDress")
@@ -30,6 +32,7 @@ targetAlpha = 1.0
 currentAlpha = 0.0
 currentColor = ofColor(255)
 previousColor = ofColor(0)
+shader = ofShader()
 
 content.add_parameter("gamma", min=0.0, max=1.0, value=0.1)
 content.add_parameter("enableSparkles", value=True)
@@ -52,6 +55,8 @@ def setup():
     fade = fade.Fade(size,size)
     waves = waves.Waves(size,size)
     circles = circles.Circles(size,size)
+
+    setupShader()
 
 
 def update():
@@ -101,24 +106,50 @@ def draw():
     """
     For every frame draw stuff. Do not forget to clear the frmebuffer!
     """
-    global sparkles
-   
+    global sparkles, shader
+
     ofClear(0)
 
-    if content["enableSparkles"]  == True:
-        sparkles.draw()
+    if shader.isLoaded():
+        shader.begin()
+        shader.setUniform1f('gamma', content["gamma"])
+        
+        ofClear(0)
 
-    if content["enableRainbow"]  == True:
-        rainbow.draw()
+        if content["enableSparkles"]  == True:
+            sparkles.draw()
 
-    if content["enableFade"]  == True:
-        fade.draw()
+        if content["enableRainbow"]  == True:
+            rainbow.draw()
 
-    if content["enableWaves"]  == True:
-        waves.draw()
+        if content["enableFade"]  == True:
+            fade.draw()
 
-    if content["enableCircles"]  == True:
-        circles.draw()
+        if content["enableWaves"]  == True:
+            waves.draw()
+
+        if content["enableCircles"]  == True:
+            circles.draw()
+
+        shader.end()
+
+   
+    # ofClear(0)
+
+    # if content["enableSparkles"]  == True:
+    #     sparkles.draw()
+
+    # if content["enableRainbow"]  == True:
+    #     rainbow.draw()
+
+    # if content["enableFade"]  == True:
+    #     fade.draw()
+
+    # if content["enableWaves"]  == True:
+    #     waves.draw()
+
+    # if content["enableCircles"]  == True:
+    #     circles.draw()
 
   
 def exit():
@@ -235,6 +266,76 @@ def released(i):
 @content.OSC('/tph/autodiscovery')
 def loopDrumsOSC(i):
     print "/tph/autodiscovery " + str(i) 
+
+
+def setupShader():
+
+    global shader
+
+    temp_dir = mkdtemp()
+    frag_file = os.path.join(temp_dir,'s.frag')
+    vert_file = os.path.join(temp_dir,'s.vert')
+    shader_file_of = os.path.join(temp_dir,'s')
+
+    vert_contents = """
+    #version 150
+
+    // these are for the programmable pipeline system
+    uniform mat4 modelViewProjectionMatrix;
+
+    in vec4 position;
+    in vec2 texcoord;
+
+    out vec2 texCoordVarying;
+
+    void main()
+    {
+        texCoordVarying = texcoord;
+        
+        gl_Position = modelViewProjectionMatrix * position;
+    }
+    """
+
+    frag_contents_prefix = """
+    #version 150    // <-- version my machine suports
+
+    uniform sampler2DRect texture0;
+    uniform float gamma = 0.2;
+
+    in vec2 texCoordVarying;
+
+    out vec4 outputColor;
+    """
+
+    frag_contents = """
+            
+    void main(){
+
+
+        vec2 pos = texCoordVarying;
+            
+
+        //Output of the shader
+        outputColor = texture(texture0, pos);
+        outputColor.rgb = pow(outputColor.rgb, vec3(1.0 / gamma));
+        
+    }
+
+    """
+
+    frag_contents_suffix = """
+        
+        
+    """    
+
+    with open(frag_file,'w') as f:
+        f.write(frag_contents_prefix)
+        f.write(frag_contents)
+        f.write(frag_contents_suffix)
+    with open(vert_file,'w') as f:
+        f.write(vert_contents)
+    shader.load(shader_file_of)
+
 
 
 

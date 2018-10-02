@@ -3,7 +3,7 @@ import os.path
 from tempfile import mkdtemp
         
 
-class Sparkles:
+class Circles:
 
     def __init__(self, width, height):
 
@@ -43,7 +43,7 @@ class Sparkles:
         if self.shader.isLoaded():
             self.shader.begin()
             self.shader.setUniform3f('iColor', r,g,b)
-            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.02)
+            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.3)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
             #self.fbo.draw(0,0)
@@ -76,66 +76,49 @@ class Sparkles:
 
 
         self.frag_contents_prefix = """
-          #version 150
-          out vec4 outputColor;
-          uniform vec3 iResolution;
-          uniform float iGlobalTime;
-          uniform int iparticles_direction;
+        #version 150
+        out vec4 outputColor;
+        uniform vec3 iResolution;
+        uniform float iGlobalTime;
 
-          in vec4 position_frag;
+        in vec4 position_frag;
           """
 
 
         self.frag_contents = """
-         // This code can be found in 
-        // https://www.shadertoy.com/view/MscXD7
+        // This code can be found in 
+        // https://www.shadertoy.com/view/ldX3zr
         // and it's property of its creator.
         // This is distributed for illustration purposes only.
 
-        #define _SnowflakeAmount 800    // Number of snowflakes
-        #define _BlizardFactor 0.2      // Fury of the storm !
-
-        vec2 uv;
+        vec2 center = vec2(0.5,0.5);
+        float speed = 0.035;
         uniform vec3 iColor = vec3(1.0,1.0,1.0);
-
-        float rnd(float x)
-        {
-            return fract(sin(dot(vec2(x+47.49,38.2467/(x+2.3)), vec2(12.9898, 78.233)))* (43758.5453));
-        }
-
-        float drawCircle(vec2 center, float radius)
-        {
-            return 1.0 - smoothstep(0.0, radius, length(uv - center));
-        }
-
 
         void mainImage( out vec4 fragColor, in vec2 fragCoord )
         {
             float invAr = iResolution.y / iResolution.x;
 
-            if(iparticles_direction>1){
-                uv = fragCoord.xy / iResolution.x;
-            }
-            else{
-                uv = fragCoord.yx / iResolution.x;
-            }
-           
-            fragColor = vec4(0, 0, 0, 1.0);
-            float j;
-            vec4 texColor = vec4(iColor, 1.0);
-            
-            for(int i=0; i<_SnowflakeAmount; i++)
-            {
-                j = float(i);
-                float speed = 0.3+rnd(cos(j))*(0.7+0.5*cos(j/(float(_SnowflakeAmount)*0.25)));
-                vec2 center = vec2((0.25-uv.y)*_BlizardFactor+rnd(j)+0.1*cos(iGlobalTime+sin(j)), mod(sin(j)-speed*(iGlobalTime*1.5*(0.1+_BlizardFactor)), 1.0));
-                
-                if(iparticles_direction%2 == 0){
-                    center = 1-center;
-                }
+            vec2 uv = fragCoord.xy / iResolution.xy;
 
-                fragColor += (vec4(drawCircle(center, 0.001+speed*0.022))*texColor);
-            }
+            vec3 col = vec4(uv,0.5+0.5,1.0).xyz;
+
+            vec3 texcol;
+
+            float x = (center.x-uv.x);
+            float y = (center.y-uv.y) *invAr;
+
+            //float r = -sqrt(x*x + y*y); //uncoment this line to symmetric ripples
+            //float r = -0.5*(x*x + y*y);
+            float r = -(x*x*x + y*y*y);
+            float z = 1.0 + 1.0*sin((r+iGlobalTime*speed)/0.013);
+
+            texcol.x = z;
+            texcol.y = z;
+            texcol.z = z;
+            texcol = 1 - texcol;
+
+            fragColor = vec4(iColor*texcol,1.0);
         }
 
         """
