@@ -18,23 +18,23 @@ content.add_parameter("FPS_LIMIT", min=0, max=60, value=30)
 
 content.add_parameter("Controller1", value=False)
 content.add_parameter("audio_react1", value=False)
-content.add_parameter("IP_1", value="192.168.0.101")
+content.add_parameter("IP_1", value="192.168.20.232")
 
 content.add_parameter("Controller2", value=False)
 content.add_parameter("audio_react2", value=False)
-content.add_parameter("IP_2", value="192.168.0.102")
+content.add_parameter("IP_2", value="192.168.20.233")
 
 content.add_parameter("Controller3", value=False)
 content.add_parameter("audio_react3", value=False)
-content.add_parameter("IP_3", value="192.168.0.103")
+content.add_parameter("IP_3", value="192.168.20.234")
 
 content.add_parameter("Controller4", value=False)
 content.add_parameter("audio_react4", value=False)
-content.add_parameter("IP_4", value="192.168.0.104")
+content.add_parameter("IP_4", value="192.168.20.235")
 
 content.add_parameter("Controller5", value=False)
 content.add_parameter("audio_react5", value=False)
-content.add_parameter("IP_5", value="192.168.0.105")
+content.add_parameter("IP_5", value="192.168.20.236")
 
 
 @content.parameter_changed('Output_name')
@@ -83,7 +83,7 @@ def update():
     if controller and controller.outlets[0] is not None:
         i = 0
         for q in range(4):
-            print "q", q
+            #print "q", q
             if content['audio_react'+str(q+1)]:
                 brightness = energy
             else:
@@ -222,11 +222,11 @@ class FakeTCPController(object):
         mac_addr_1, mac_addr_2, mac_addr_3, mac_addr_4, mac_addr_5, mac_addr_6 = (0, 0, 0, 0, 0, 0)
         actual_ip_1, actual_ip_2, actual_ip_3, actual_ip_4 = (127, 0, 0, 1)
         properties = 0
-        actual_gateway_1, actual_gateway_2, actual_gateway_3, actual_gateway_4 = (192, 168, 0, 1)
+        actual_gateway_1, actual_gateway_2, actual_gateway_3, actual_gateway_4 = (192, 168, 20, 1)
         actual_mask_1, actual_mask_2, actual_mask_3, actual_mask_4 = (255, 255, 255, 0)
         device_name = "WIFI"
-        static_ip_1, static_ip_2, static_ip_3, static_ip_4 = (192, 168, 0, 100)
-        static_gateway_1, static_gateway_2, static_gateway_3, static_gateway_4 = (192, 168, 0, 1)
+        static_ip_1, static_ip_2, static_ip_3, static_ip_4 = (192, 168, 20, 65)
+        static_gateway_1, static_gateway_2, static_gateway_3, static_gateway_4 = (192, 168, 20, 1)
         static_mask_1, static_mask_2, static_mask_3, static_mask_4 = (255, 255, 255, 0)
         message = struct.pack('<HHB6B4BB4B4B16s4B4B4B',
                               message_version,
