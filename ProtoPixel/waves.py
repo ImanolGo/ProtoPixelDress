@@ -44,10 +44,10 @@ class Waves:
         if self.shader.isLoaded():
             self.shader.begin()
             self.shader.setUniform3f('iColor', r,g,b)
-            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.2)
+            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.08)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             self.shader.setUniform1f('inoise_grain', 0.7)
-            ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
+            ofDrawRectangle(-self.width/2 ,-self.height/2.,self.width,self.height)
             #self.fbo.draw(0,0)
        
             self.shader.end()
@@ -125,7 +125,7 @@ class Waves:
                 float layer3=sin(iGlobalTime*7.92-inoise_grain*sin(length(uv-vec2(-0.34,1.28)))*42.5);
                 float layer4=sin(iGlobalTime*6.71-inoise_grain*sin(length(uv-vec2(1.23,-0.24)))*47.2);
 
-                float spiral=spir(uv,vec2(0.5,0.5));
+                float spiral=spir(uv,vec2(0.7,0.3));
                 spiral*=3.0;
                 
                 float temp = layer1+layer2+layer3+layer4+spiral;
@@ -138,7 +138,7 @@ class Waves:
             {
                 vec2 uv=fragCoord.xy/iResolution.x;
                 
-                float waveHeight=0.02+height(uv);
+                float waveHeight=2.1*height(uv) - 0.1;
                 
                 vec3 color=vec3(waveHeight*iColor.r,waveHeight*iColor.g,waveHeight*iColor.b);
                 

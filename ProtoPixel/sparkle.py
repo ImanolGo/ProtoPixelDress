@@ -43,7 +43,7 @@ class Sparkles:
         if self.shader.isLoaded():
             self.shader.begin()
             self.shader.setUniform3f('iColor', r,g,b)
-            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.5)
+            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.02)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
             #self.fbo.draw(0,0)
@@ -92,7 +92,7 @@ class Sparkles:
         // and it's property of its creator.
         // This is distributed for illustration purposes only.
 
-        #define _SnowflakeAmount 500    // Number of snowflakes
+        #define _SnowflakeAmount 800    // Number of snowflakes
         #define _BlizardFactor 0.2      // Fury of the storm !
 
         vec2 uv;

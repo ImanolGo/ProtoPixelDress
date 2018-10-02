@@ -43,7 +43,7 @@ class Circles:
         if self.shader.isLoaded():
             self.shader.begin()
             self.shader.setUniform3f('iColor', r,g,b)
-            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*3.0)
+            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.3)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
             #self.fbo.draw(0,0)
@@ -108,8 +108,9 @@ class Circles:
             float x = (center.x-uv.x);
             float y = (center.y-uv.y) *invAr;
 
-            float r = -sqrt(x*x + y*y); //uncoment this line to symmetric ripples
-            //float r = -(x*x + y*y);
+            //float r = -sqrt(x*x + y*y); //uncoment this line to symmetric ripples
+            float r = -0.5*(x*x + y*y);
+            //float r = -(x*x*x + y*y*y);
             float z = 1.0 + 1.0*sin((r+iGlobalTime*speed)/0.013);
 
             texcol.x = z;

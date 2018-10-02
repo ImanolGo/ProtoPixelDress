@@ -26,10 +26,12 @@ print "ProtoPixelDress"
 elapsedTime = 0.0
 size = 200
 content.FBO_SIZE = (size,size) #optional: define size of FBO, default=(100,100)
-targetAlpha = 0.0
+targetAlpha = 1.0
 currentAlpha = 0.0
- 
+currentColor = ofColor(255)
+previousColor = ofColor(0)
 
+content.add_parameter("gamma", min=0.0, max=1.0, value=0.1)
 content.add_parameter("enableSparkles", value=True)
 content.add_parameter("enableRainbow", value=True)
 content.add_parameter("enableFade", value=True)
@@ -59,6 +61,8 @@ def update():
 
     global sparkles, rainbow
 
+    updateColor()
+
     if content["enableSparkles"]  == True:
         sparkles.update()
 
@@ -75,13 +79,22 @@ def update():
         circles.update()
 
     
-    updateAlpha()
+    
 
-def updateAlpha():
-	global currentAlpha, targetAlpha
+def updateColor():
 
-	currentAlpha = currentAlpha + (targetAlpha - currentAlpha)*0.05
-	#print currentAlpha
+    global currentAlpha, targetAlpha, previousColor, currentColor
+
+    currentAlpha = currentAlpha + (targetAlpha - currentAlpha)*0.02
+    
+    if currentAlpha > 1.0:
+        currentAlpha = 1.0
+
+    newColor = previousColor.getLerped(currentColor, currentAlpha)
+    setColors(newColor)
+   # print currentAlpha
+    #print newColor
+    #print currentColor
 
 
 def draw():
@@ -135,6 +148,16 @@ def setColors(color):
     waves.setColor(color)
     circles.setColor(color)
 
+def setNewColor(color):
+
+    global currentAlpha, targetAlpha, previousColor, currentColor
+
+    previousColor = previousColor.getLerped(currentColor, currentAlpha)
+    currentColor = color
+    currentAlpha = 0
+    targetAlpha = 1
+
+
 def disableAll():
     content["enableSparkles"]  = False
     content["enableFade"]  = False
@@ -145,39 +168,37 @@ def disableAll():
 
 @content.parameter_changed('Color')
 def parameter_changed(value):
-    sparkles.setColor(value)
-    fade.setColor(value)
-    waves.setColor(value)
-    circles.setColor(value)
-
+    setNewColor(value)
+    #setColors(value)
+  
 
 @content.OSC('/tph/touched')
 def touched(i):
     print "/tph/touched " + str(i)
     if i==0:
         print "Set Color Red"
-        setColors(ofColor(255,0,0))
+        setNewColor(ofColor(255,0,0))
     elif i==1:
         print "Set Color Green"
-        setColors(ofColor(0,255,0))
+        setNewColor(ofColor(0,255,0))
     elif i==2:
         print "Set Color Blue"
-        setColors(ofColor(0,0,255))
+        setNewColor(ofColor(0,0,255))
     elif i==3:
         print "Set Color Cyan"
-        setColors(ofColor(0,255,255))
+        setNewColor(ofColor(0,255,255))
     elif i==4:
         print "Set Color Pink"
-        setColors(ofColor(255,20,147))
+        setNewColor(ofColor(255,20,147))
     elif i==5:
         print "Set Color Purple"
-        setColors(ofColor(255,0,255))
+        setNewColor(ofColor(255,0,255))
     # elif i==6:
     #     print "Set Color Lavender"
     #     setColors(ofColor(230,230,250))
     elif i==6:
         print "Set Color White"
-        setColors(ofColor(255,255,255))
+        setNewColor(ofColor(255,255,255))
 
     elif i==7:
         print "Set Sparkles"

@@ -1074,10 +1074,10 @@
                 <params>
                     <enableSparkles type="bool">0</enableSparkles>
                     <enableRainbow type="bool">0</enableRainbow>
-                    <enableFade type="bool">1</enableFade>
+                    <enableFade type="bool">0</enableFade>
                     <enableWaves type="bool">0</enableWaves>
-                    <enableCircles type="bool">0</enableCircles>
-                    <Color type="color">84, 255, 124, 255</Color>
+                    <enableCircles type="bool">1</enableCircles>
+                    <Color type="color">255, 255, 255, 255</Color>
                 </params>
             </parameters>
             <transformation type="matrix4x4"> 1.72549,        0,        0,        0&#x0A;       0,  1.24616,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
