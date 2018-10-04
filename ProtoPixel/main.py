@@ -2,6 +2,7 @@ from openframeworks import *
 from protopixel import Content
 from tempfile import mkdtemp
 import os.path
+from random import randint
 import imp
 
 content = Content("ProtoPixelDress")
@@ -26,6 +27,7 @@ print "ProtoPixelDress"
 
 #a global variable
 elapsedTime = 0.0
+change_time = 10
 size = 200
 content.FBO_SIZE = (size,size) #optional: define size of FBO, default=(100,100)
 targetAlpha = 1.0
@@ -67,6 +69,7 @@ def update():
 
     global sparkles, rainbow
 
+    updateTime()
     updateColor()
 
     sparkles.update()
@@ -75,6 +78,19 @@ def update():
     waves.update() 
     circles.update()
         
+
+def updateTime():
+    global elapsedTime, change_time
+
+    elapsedTime+=ofGetLastFrameTime()
+    if elapsedTime>change_time:
+        mode = randint(7,11)
+        touched(mode)
+        color = randint(0,6)
+        touched(color)
+        elapsedTime = 0
+        print "changedModeColor"
+
 
 def updateColor():
 
@@ -193,7 +209,12 @@ def parameter_changed(value):
 
 @content.OSC('/tph/touched')
 def touched(i):
+    global elapsedTime
+
     print "/tph/touched " + str(i)
+
+    elapsedTime = 0.0
+
     if i==0:
         print "Set Color Red"
         setNewColor(ofColor(255,0,0))
@@ -221,28 +242,28 @@ def touched(i):
 
     elif i==7:
         print "Set Sparkles"
-        disableAll()
-        content["enableSparkles"]  = True
+        setAlphas(0)
+        sparkles.setAlpha(1)
 
     elif i==8:
         print "Set Rainbow"
-        disableAll()
-        content["enableRainbow"]  = True
+        setAlphas(0)
+        rainbow.setAlpha(1)
 
     elif i==9:
         print "Set Fade"
-        disableAll()
-        content["enableFade"]  = True
+        setAlphas(0)
+        fade.setAlpha(1)
 
     elif i==10:
         print "Set Waves"
-        disableAll()
-        content["enableWaves"]  = True
+        setAlphas(0)
+        waves.setAlpha(1)
 
     elif i==11:
         print "Set Circles"
-        disableAll()
-        content["enableCircles"]  = True
+        setAlphas(0)
+        circles.setAlpha(1)
 
 
 

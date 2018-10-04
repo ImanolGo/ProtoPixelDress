@@ -1067,13 +1067,13 @@
                 </projection_parameters>
                 <python_script type="filepath">$PROJECT_DIR/main.py</python_script>
                 <params>
-                    <gamma type="float">0.2</gamma>
-                    <enableSparkles type="bool">0</enableSparkles>
-                    <enableRainbow type="bool">0</enableRainbow>
-                    <enableFade type="bool">0</enableFade>
-                    <enableWaves type="bool">0</enableWaves>
+                    <gamma type="float">0.4</gamma>
+                    <enableSparkles type="bool">1</enableSparkles>
+                    <enableRainbow type="bool">1</enableRainbow>
+                    <enableFade type="bool">1</enableFade>
+                    <enableWaves type="bool">1</enableWaves>
                     <enableCircles type="bool">1</enableCircles>
-                    <Color type="color">255, 97, 251, 255</Color>
+                    <Color type="color">255, 255, 255, 255</Color>
                 </params>
             </parameters>
             <transformation type="matrix4x4"> 1.72549,        0,        0,        0&#x0A;       0,  1.24616,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
