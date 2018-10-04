@@ -13,6 +13,8 @@ class Fade:
         self.fbo = ofFbo()
         self.fbo.allocate(width,height)
         self.color = ofColor(255)
+        self.currentAlpha = 1.0
+        self.targetAlpha = 1.0
         self.setup()
 
 
@@ -20,6 +22,7 @@ class Fade:
         self.setupShader()
 
     def update(self):
+        self.updateAlpha()
         self.updateFbo()
 
 
@@ -30,6 +33,10 @@ class Fade:
         self.drawShader()
         self.fbo.end()
 
+    def updateAlpha(self):
+        self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.05
+        self.color.a = int(self.currentAlpha*255)
+
     def draw(self):
         self.fbo.draw(0,0)
         #self.drawShader()
@@ -39,10 +46,11 @@ class Fade:
         r = self.color.r/255.0
         g = self.color.g/255.0
         b = self.color.b/255.0
+        a = self.color.a/255.0
 
         if self.shader.isLoaded():
             self.shader.begin()
-            self.shader.setUniform3f('iColor', r,g,b)
+            self.shader.setUniform4f('iColor', r,g,b,a)
             self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.3)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
@@ -54,6 +62,8 @@ class Fade:
     def setColor(self, color):
         self.color = color
 
+    def setAlpha(self, alpha):
+        self.targetAlpha = alpha
 
     def setupShader(self):
 
@@ -93,7 +103,7 @@ class Fade:
 
         vec2 center = vec2(0.5,0.5);
         float speed = 0.035;
-        uniform vec3 iColor = vec3(1.0,1.0,1.0);
+        uniform vec4 iColor = vec4(1.0);
 
         void mainImage( out vec4 fragColor, in vec2 fragCoord )
         {
@@ -118,7 +128,7 @@ class Fade:
             texcol.z = z;
             texcol = 1 - texcol;
 
-            fragColor = vec4(iColor*texcol,1.0);
+            fragColor = vec4(iColor.rgb*texcol,iColor.a);
         }
 
         """

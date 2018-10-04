@@ -13,6 +13,8 @@ class Rainbow:
         self.fbo = ofFbo()
         self.fbo.allocate(width,height)
         self.color = ofColor(255)
+        self.currentAlpha = 1.0
+        self.targetAlpha = 1.0
         self.setup()
 
 
@@ -20,8 +22,12 @@ class Rainbow:
         self.setupShader()
 
     def update(self):
+        self.updateAlpha()
         self.updateFbo()
 
+    def updateAlpha(self):
+        self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.05
+        self.color.a = int(self.currentAlpha*255)
 
     def updateFbo(self):
         self.fbo.begin()
@@ -40,10 +46,11 @@ class Rainbow:
         r = self.color.r/255.0
         g = self.color.g/255.0
         b = self.color.b/255.0
+        a = self.color.a/255.0
 
         if self.shader.isLoaded():
             self.shader.begin()
-            self.shader.setUniform3f('iColor', r,g,b)
+            self.shader.setUniform4f('iColor', r,g,b,a)
             self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.1)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
@@ -55,6 +62,8 @@ class Rainbow:
     def setColor(self, color):
         self.color = color
 
+    def setAlpha(self, alpha):
+        self.targetAlpha = alpha
 
     def setupShader(self):
 
@@ -81,6 +90,7 @@ class Rainbow:
           out vec4 outputColor;
           uniform vec3 iResolution;
           uniform float iGlobalTime;
+          uniform vec4 iColor = vec4(1.0);
 
           in vec4 position_frag;
           """
@@ -116,7 +126,7 @@ class Rainbow:
                 //add screen fade
                     // col       *= vec3(exp(-pow(abs(uv.y - 0.5), 6.0) / pow(2.0 * 0.05, 2.0)));
                 // Output to screen
-                fragColor       = vec4(col,1.0);
+                fragColor       = vec4(col,iColor.a);
             }
 
         """

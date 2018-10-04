@@ -34,7 +34,7 @@ currentColor = ofColor(255)
 previousColor = ofColor(0)
 shader = ofShader()
 
-content.add_parameter("gamma", min=0.0, max=1.0, value=0.1)
+content.add_parameter("gamma", min=0.0, max=1.0, value=0.4)
 content.add_parameter("enableSparkles", value=True)
 content.add_parameter("enableRainbow", value=True)
 content.add_parameter("enableFade", value=True)
@@ -55,6 +55,7 @@ def setup():
     fade = fade.Fade(size,size)
     waves = waves.Waves(size,size)
     circles = circles.Circles(size,size)
+    ofEnableAlphaBlending()
 
     setupShader()
 
@@ -68,23 +69,12 @@ def update():
 
     updateColor()
 
-    if content["enableSparkles"]  == True:
-        sparkles.update()
-
-    if content["enableRainbow"]  == True:
-        rainbow.update()
-
-    if content["enableFade"]  == True:
-        fade.update()
-
-    if content["enableWaves"]  == True:
-        waves.update()
-
-    if content["enableCircles"]  == True:
-        circles.update()
-
-    
-    
+    sparkles.update()
+    rainbow.update()
+    fade.update()
+    waves.update() 
+    circles.update()
+        
 
 def updateColor():
 
@@ -116,20 +106,11 @@ def draw():
         
         ofClear(0)
 
-        if content["enableSparkles"]  == True:
-            sparkles.draw()
-
-        if content["enableRainbow"]  == True:
-            rainbow.draw()
-
-        if content["enableFade"]  == True:
-            fade.draw()
-
-        if content["enableWaves"]  == True:
-            waves.draw()
-
-        if content["enableCircles"]  == True:
-            circles.draw()
+        sparkles.draw()
+        rainbow.draw()
+        fade.draw()
+        waves.draw()
+        circles.draw()    
 
         shader.end()
 
@@ -178,6 +159,13 @@ def setColors(color):
     fade.setColor(color)
     waves.setColor(color)
     circles.setColor(color)
+
+def setAlphas(value):
+    sparkles.setAlpha(value)
+    waves.setAlpha(value)
+    rainbow.setAlpha(value)
+    fade.setAlpha(value)
+    circles.setAlpha(value)
 
 def setNewColor(color):
 
@@ -267,6 +255,36 @@ def released(i):
 def loopDrumsOSC(i):
     print "/tph/autodiscovery " + str(i) 
 
+
+@content.parameter_changed('enableWaves')
+def parameter_changed(value):
+    setAlphas(0)
+    waves.setAlpha(value)
+    print "Waves: ", value
+
+@content.parameter_changed('enableSparkles')
+def parameter_changed(value):
+    setAlphas(0)
+    sparkles.setAlpha(value)
+    print "Sparkles: ", value
+
+@content.parameter_changed('enableRainbow')
+def parameter_changed(value):
+    setAlphas(0)
+    rainbow.setAlpha(value)
+    print "Rainbow: ", value
+
+@content.parameter_changed('enableFade')
+def parameter_changed(value):
+    setAlphas(0)
+    fade.setAlpha(value)
+    print "Fade: ", fade
+
+@content.parameter_changed('enableCircles')
+def parameter_changed(value):
+    setAlphas(0)
+    circles.setAlpha(value)
+    print "Circles: ", circle
 
 def setupShader():
 

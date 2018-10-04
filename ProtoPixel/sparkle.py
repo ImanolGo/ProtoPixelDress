@@ -13,6 +13,8 @@ class Sparkles:
         self.fbo = ofFbo()
         self.fbo.allocate(width,height)
         self.color = ofColor(255)
+        self.currentAlpha = 1.0
+        self.targetAlpha = 1.0
         self.setup()
 
 
@@ -20,6 +22,7 @@ class Sparkles:
         self.setupShader()
 
     def update(self):
+        self.updateAlpha()
         self.updateFbo()
 
 
@@ -30,19 +33,29 @@ class Sparkles:
         self.drawShader()
         self.fbo.end()
 
+    def updateAlpha(self):
+        self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.05
+        self.color.a = int(self.currentAlpha*255)
+        #print "Alpha-> ", self.color.a
+
     def draw(self):
+        ofSetColor(self.color.a)
         self.fbo.draw(0,0)
         #self.drawShader()
+        
+    def setAlpha(self, alpha):
+        self.targetAlpha = alpha
 
     def drawShader(self):
 
         r = self.color.r/255.0
         g = self.color.g/255.0
         b = self.color.b/255.0
+        a = self.color.a/255.0
 
         if self.shader.isLoaded():
             self.shader.begin()
-            self.shader.setUniform3f('iColor', r,g,b)
+            self.shader.setUniform4f('iColor', r,g,b, a)
             self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.02)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
@@ -96,7 +109,7 @@ class Sparkles:
         #define _BlizardFactor 0.2      // Fury of the storm !
 
         vec2 uv;
-        uniform vec3 iColor = vec3(1.0,1.0,1.0);
+        uniform vec4 iColor = vec4(1.0);
 
         float rnd(float x)
         {
@@ -122,7 +135,7 @@ class Sparkles:
            
             fragColor = vec4(0, 0, 0, 1.0);
             float j;
-            vec4 texColor = vec4(iColor, 1.0);
+            vec4 texColor = iColor;
             
             for(int i=0; i<_SnowflakeAmount; i++)
             {
@@ -136,6 +149,8 @@ class Sparkles:
 
                 fragColor += (vec4(drawCircle(center, 0.001+speed*0.022))*texColor);
             }
+
+            fragColor.a = iColor.a;
         }
 
         """

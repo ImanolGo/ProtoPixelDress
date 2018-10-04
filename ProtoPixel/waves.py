@@ -13,6 +13,8 @@ class Waves:
         self.fbo = ofFbo()
         self.fbo.allocate(width,height)
         self.color = ofColor(255)
+        self.currentAlpha = 1.0
+        self.targetAlpha = 1.0
         self.setup()
 
 
@@ -20,8 +22,12 @@ class Waves:
         self.setupShader()
 
     def update(self):
+        self.updateAlpha()
         self.updateFbo()
 
+    def updateAlpha(self):
+        self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.05
+        self.color.a = int(self.currentAlpha*255)
 
     def updateFbo(self):
         self.fbo.begin()
@@ -32,6 +38,9 @@ class Waves:
 
     def draw(self):
 
+       # brightness = int(self.currentAlpha*255)
+        #print "Brightness Waves: ", brightness
+        #ofSetColor(0)
         self.fbo.draw(0,0)
         #self.drawShader()
 
@@ -40,10 +49,11 @@ class Waves:
         r = self.color.r/255.0
         g = self.color.g/255.0
         b = self.color.b/255.0
+        a = self.color.a/255.0
 
         if self.shader.isLoaded():
             self.shader.begin()
-            self.shader.setUniform3f('iColor', r,g,b)
+            self.shader.setUniform4f('iColor', r,g,b,a)
             self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.08)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             self.shader.setUniform1f('inoise_grain', 0.7)
@@ -53,9 +63,11 @@ class Waves:
             self.shader.end()
         
 
+    def setAlpha(self, alpha):
+        self.targetAlpha = alpha
+
     def setColor(self, color):
         self.color = color
-
 
     def setupShader(self):
 
@@ -94,7 +106,7 @@ class Waves:
             // and it's property of its creator.
             // This is distributed for illustration purposes only.
 
-            uniform vec3 iColor = vec3(1.0,1.0,1.0);
+            uniform vec4 iColor = vec4(1.0,1.0,1.0, 1.0);
 
             float hash(vec2 p)
             {
@@ -142,7 +154,7 @@ class Waves:
                 
                 vec3 color=vec3(waveHeight*iColor.r,waveHeight*iColor.g,waveHeight*iColor.b);
                 
-                fragColor = vec4( color, 1.0 );
+                fragColor = vec4( color, iColor.a );
             }
         """
 
