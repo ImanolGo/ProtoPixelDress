@@ -79,8 +79,11 @@ class WifiManager
 WifiManager::WifiManager()
 {
 
-    ssid = "TPH Operations";
-    pass = "TheFUTURE!Sno3";
+      ssid =  "ppxnode-4BE2201";
+      pass =  "password";
+
+//    ssid = "TPH Operations";
+//    pass = "TheFUTURE!Sno3";
 
 //    ssid     =  "TP-LINK_54E4";
 //    pass = "27155332";
@@ -90,6 +93,7 @@ WifiManager::WifiManager()
     autodiscovery_timer =  millis();
     is_connected = false;
      _touched = false;
+
 }
 
 void WifiManager::setup()
@@ -209,7 +213,7 @@ void WifiManager::WiFiEvent(WiFiEvent_t event){
           udp.begin(LOCAL_PORT);
           wifiConnected = true;
           ipSend = WiFi.localIP();
-          ipSend[3] = 255;
+          ipSend[3] = 1;
           break;
       case WIFI_EVENT_STAMODE_DISCONNECTED:
           Serial.println("WifiManager::WiFi lost connection");
@@ -289,4 +293,3 @@ void WifiManager::sendAutodiscovery()
       autodiscovery_timer = millis();
   }
 }
-

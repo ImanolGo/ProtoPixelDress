@@ -10,31 +10,26 @@ import os.path
 from openframeworks import *
 from protopixel import Content
 
-UDP_IP = "192.168.178.20"
+UDP_IP = "192.168.8.237"
 UDP_PORT = 2390
 
 content = Content('Virtual controller')
 content.add_parameter("FPS_LIMIT", min=0, max=60, value=30)
 
 content.add_parameter("Controller1", value=False)
-content.add_parameter("audio_react1", value=False)
-content.add_parameter("IP_1", value="192.168.20.232")
+content.add_parameter("IP_1", value="192.168.8.237")
 
 content.add_parameter("Controller2", value=False)
-content.add_parameter("audio_react2", value=False)
-content.add_parameter("IP_2", value="192.168.20.233")
+content.add_parameter("IP_2", value="192.168.8.238")
 
 content.add_parameter("Controller3", value=False)
-content.add_parameter("audio_react3", value=False)
-content.add_parameter("IP_3", value="192.168.20.234")
+content.add_parameter("IP_3", value="192.168.8.239")
 
 content.add_parameter("Controller4", value=False)
-content.add_parameter("audio_react4", value=False)
-content.add_parameter("IP_4", value="192.168.20.235")
+content.add_parameter("IP_4", value="192.168.8.240")
 
 content.add_parameter("Controller5", value=False)
-content.add_parameter("audio_react5", value=False)
-content.add_parameter("IP_5", value="192.168.20.236")
+content.add_parameter("IP_5", value="192.168.8.241")
 
 
 @content.parameter_changed('Output_name')
@@ -45,7 +40,7 @@ def output_name_changed(newval):
     pass
 
 def setup():
-    global controller, update_time, timmer, qframe, qtimmer, is_started,FPS, energy, curVol
+    global controller, update_time, timmer, qframe, qtimmer, is_started,FPS
     print "SETUP------------------------"
     FPS = 30
     controller = None
@@ -54,42 +49,23 @@ def setup():
     qframe = 0
     qtimmer = tt()
     is_started = True
-    energy = 0
-    curVol = 0
     #pt = ofToDataPath(".")
     #print pt,"-----------------ooooooooooo"
     
 
 def update():
-    global update_time, timmer, qframe, qtimmer, controller,FPS, energy, curVol
-
-    buffer = content.get_sound_buffer()
-     # get the absolute values 
-    buffer = np.abs(buffer)
+    global update_time, timmer, qframe, qtimmer, controller,FPS
 
     scale = 15
-
-    # get the sum of all values, to measure the energy
-    
-    curVol = int(buffer.sum())
-    curVol = min(255,scale*curVol)
-    #brightness = float(energy)/255.0
-    
-    
-    energy  = (80*energy)/100;
-    energy  = energy + (20*curVol)/100;
     brightness = 255
 
     if controller and controller.outlets[0] is not None:
         i = 0
         for q in range(4):
             #print "q", q
-            if content['audio_react'+str(q+1)]:
-                brightness = energy
-            else:
-                brightness = 255  
-
             msg = ""
+            if controller.outlets[i] is None:
+                return
             outlet = np.fromstring(controller.outlets[i],dtype=np.uint8)
             numlights = len(outlet) / 3
             if numlights < 200:
@@ -110,7 +86,7 @@ def update():
             #print content['Controller'+str(i+1)]
             #msg = ''.join( [chr(255)] * ((400)*3))
             if content['Controller'+str(q+1)]:
-                print msg
+                #print msg
                 try:
                     #print len(msg), content['IP_'+str(q+1)]
                     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
@@ -120,10 +96,7 @@ def update():
                 except socket.error as e:
                     print "socket error {} at device: {} ({})".format(e,q+q,content['IP_'+str(q+1)])
         #controller sol
-        if content['audio_react5']:
-            brightness = energy
-        else:
-            brightness = 255 
+        brightness = 255 
         msg = ""
         outlet = np.fromstring(controller.outlets[5],dtype=np.uint8)
         numlights = len(outlet) / 3
@@ -177,7 +150,8 @@ def draw():
     
     global energy
     # we use the energy to change the color
-    ofClear(energy,energy,energy,255)
+    #ofClear(energy,energy,energy,255)
+    pass
 
 
 def exit():
@@ -222,11 +196,11 @@ class FakeTCPController(object):
         mac_addr_1, mac_addr_2, mac_addr_3, mac_addr_4, mac_addr_5, mac_addr_6 = (0, 0, 0, 0, 0, 0)
         actual_ip_1, actual_ip_2, actual_ip_3, actual_ip_4 = (127, 0, 0, 1)
         properties = 0
-        actual_gateway_1, actual_gateway_2, actual_gateway_3, actual_gateway_4 = (192, 168, 20, 1)
+        actual_gateway_1, actual_gateway_2, actual_gateway_3, actual_gateway_4 = (192, 168, 8, 1)
         actual_mask_1, actual_mask_2, actual_mask_3, actual_mask_4 = (255, 255, 255, 0)
         device_name = "WIFI"
-        static_ip_1, static_ip_2, static_ip_3, static_ip_4 = (192, 168, 20, 65)
-        static_gateway_1, static_gateway_2, static_gateway_3, static_gateway_4 = (192, 168, 20, 1)
+        static_ip_1, static_ip_2, static_ip_3, static_ip_4 = (192, 168, 8, 1)
+        static_gateway_1, static_gateway_2, static_gateway_3, static_gateway_4 = (192, 168, 8, 1)
         static_mask_1, static_mask_2, static_mask_3, static_mask_4 = (255, 255, 255, 0)
         message = struct.pack('<HHB6B4BB4B4B16s4B4B4B',
                               message_version,
@@ -265,14 +239,14 @@ class FakeTCPController(object):
                 print "New Connection"
                 while self.running:
                     header = ss.recv(23)
+                    ss.send('ok')
                     if not header:
                         break
                     assert header[:5] == "PROTO"
                     LED_count = struct.unpack('>8H',header[7:7+8*2])
                     for i in range(8):
                         outletdata = ss.recv(LED_count[i]*3)
-                        self.outlets[i] = outletdata
-                    ss.send('ok')
+                        self.outlets[i] = outletdata 
             except socket.timeout:
                 pass
             except socket.error:

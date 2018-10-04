@@ -1040,20 +1040,15 @@
                 <params>
                     <FPS_LIMIT type="int">30</FPS_LIMIT>
                     <Controller1 type="bool">1</Controller1>
-                    <audio_react1 type="bool">0</audio_react1>
-                    <IP_1 type="string">192.168.20.232</IP_1>
+                    <IP_1 type="string">192.168.8.237</IP_1>
                     <Controller2 type="bool">0</Controller2>
-                    <audio_react2 type="bool">0</audio_react2>
-                    <IP_2 type="string">192.168.20.234</IP_2>
+                    <IP_2 type="string">192.168.8.238</IP_2>
                     <Controller3 type="bool">0</Controller3>
-                    <audio_react3 type="bool">0</audio_react3>
-                    <IP_3 type="string">192.168.20.235</IP_3>
+                    <IP_3 type="string">192.168.8.239</IP_3>
                     <Controller4 type="bool">0</Controller4>
-                    <audio_react4 type="bool">0</audio_react4>
-                    <IP_4 type="string">192.168.20.236</IP_4>
+                    <IP_4 type="string">192.168.8.240</IP_4>
                     <Controller5 type="bool">0</Controller5>
-                    <audio_react5 type="bool">0</audio_react5>
-                    <IP_5 type="string">192.168.20.237</IP_5>
+                    <IP_5 type="string">192.168.8.241</IP_5>
                 </params>
             </parameters>
             <transformation type="matrix4x4">     0.2,        0,        0,        0&#x0A;       0,      0.2,        0,        0&#x0A;       0,        0,        1,        0&#x0A;-1.00972, 0.699297,        0,        1</transformation>
@@ -1072,12 +1067,13 @@
                 </projection_parameters>
                 <python_script type="filepath">$PROJECT_DIR/main.py</python_script>
                 <params>
+                    <gamma type="float">0.2</gamma>
                     <enableSparkles type="bool">0</enableSparkles>
                     <enableRainbow type="bool">0</enableRainbow>
                     <enableFade type="bool">0</enableFade>
                     <enableWaves type="bool">0</enableWaves>
                     <enableCircles type="bool">1</enableCircles>
-                    <Color type="color">255, 255, 255, 255</Color>
+                    <Color type="color">255, 97, 251, 255</Color>
                 </params>
             </parameters>
             <transformation type="matrix4x4"> 1.72549,        0,        0,        0&#x0A;       0,  1.24616,        0,        0&#x0A;       0,        0,        1,        0&#x0A;       0,        0,        0,        1</transformation>
