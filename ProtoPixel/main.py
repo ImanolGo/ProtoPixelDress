@@ -5,6 +5,8 @@ import os.path
 from random import randint
 import imp
 
+from OSC import OSCClient, OSCMessage
+
 content = Content("ProtoPixelDress")
 
 sparkle_file = content.add_asset("sparkle.py")
@@ -22,12 +24,19 @@ waves = imp.load_source('waves',waves_file)
 circles_file = content.add_asset("circles.py")
 circles = imp.load_source('circles',circles_file)
 
+
+OSC_DEST_IP = "localhost"
+OSC_DEST_PORT = 2345
+
+# To send OSC messages we need an OSC Client
+oscclient = OSCClient()
+
 print "ProtoPixelDress"
 
 
 #a global variable
 elapsedTime = 0.0
-change_time = 10
+change_time = 300
 size = 200
 content.FBO_SIZE = (size,size) #optional: define size of FBO, default=(100,100)
 targetAlpha = 1.0
@@ -103,9 +112,19 @@ def updateColor():
 
     newColor = previousColor.getLerped(currentColor, currentAlpha)
     setColors(newColor)
+    sendColor(newColor)
    # print currentAlpha
     #print newColor
     #print currentColor
+
+def sendColor(color):
+
+    message = OSCMessage() #Create the OSC Message
+    message.setAddress("/tph/color") #Define the OSC Address
+    message.append(int(color.r))
+    message.append(int(color.g))
+    message.append(int(color.b))
+    oscclient.sendto(message,(OSC_DEST_IP,OSC_DEST_PORT)) #send osc message
 
 
 def draw():
@@ -264,6 +283,12 @@ def touched(i):
         print "Set Circles"
         setAlphas(0)
         circles.setAlpha(1)
+
+
+    message = OSCMessage() #Create the OSC Message
+    message.setAddress("/tph/mode") #Define the OSC Address
+    message.append(int(i))
+    oscclient.sendto(message,(OSC_DEST_IP,OSC_DEST_PORT)) #send osc message
 
 
 
