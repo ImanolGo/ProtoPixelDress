@@ -15,6 +15,9 @@ class Waves:
         self.color = ofColor(255)
         self.currentAlpha = 1.0
         self.targetAlpha = 1.0
+        self.elapsedTime = 0.0
+        self.one_day_in_seconds = 60*60*24
+        self.speed = 0.08
         self.setup()
 
 
@@ -22,12 +25,18 @@ class Waves:
         self.setupShader()
 
     def update(self):
+        self.updateTime()
         self.updateAlpha()
         self.updateFbo()
 
     def updateAlpha(self):
         self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.05
         self.color.a = int(self.currentAlpha*255)
+
+    def updateTime(self):
+        self.elapsedTime += ofGetLastFrameTime()
+        if self.elapsedTime > self.one_day_in_seconds:
+            self.elapsedTime-= self.one_day_in_seconds
 
     def updateFbo(self):
         self.fbo.begin()
@@ -54,7 +63,7 @@ class Waves:
         if self.shader.isLoaded():
             self.shader.begin()
             self.shader.setUniform4f('iColor', r,g,b,a)
-            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.08)
+            self.shader.setUniform1f('iGlobalTime', self.elapsedTime*self.speed)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             self.shader.setUniform1f('inoise_grain', 0.7)
             ofDrawRectangle(-self.width/2 ,-self.height/2.,self.width,self.height)

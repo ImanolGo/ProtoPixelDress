@@ -36,7 +36,7 @@ print "ProtoPixelDress"
 
 #a global variable
 elapsedTime = 0.0
-change_time = 300
+change_time = 60
 size = 200
 content.FBO_SIZE = (size,size) #optional: define size of FBO, default=(100,100)
 targetAlpha = 1.0
@@ -44,6 +44,9 @@ currentAlpha = 0.0
 currentColor = ofColor(255)
 previousColor = ofColor(0)
 shader = ofShader()
+colorIndex = 0
+modeIndex = 0
+
 
 content.add_parameter("gamma", min=0.0, max=1.0, value=0.4)
 content.add_parameter("enableSparkles", value=True)
@@ -70,6 +73,9 @@ def setup():
 
     setupShader()
 
+    touched(colorIndex)
+    touched(modeIndex)
+
 
 def update():
     """
@@ -86,19 +92,33 @@ def update():
     fade.update()
     waves.update() 
     circles.update()
+
+    #print "update"
         
 
 def updateTime():
-    global elapsedTime, change_time
+    global elapsedTime, change_time, colorIndex, modeIndex
 
     elapsedTime+=ofGetLastFrameTime()
     if elapsedTime>change_time:
+
+        # colorIndex = (colorIndex + 1)%7
+        # touched(colorIndex)
+        # print "Changed Color"
+
+        # if colorIndex == 0:
+        #     modeIndex = (modeIndex+1)%5
+        #     touched(modeIndex + 7)
+        #     print "Changed Mode"
+
         mode = randint(7,11)
         touched(mode)
         color = randint(0,6)
         touched(color)
-        elapsedTime = 0
         print "changedModeColor"
+        
+        elapsedTime = 0
+       
 
 
 def updateColor():
@@ -247,11 +267,11 @@ def touched(i):
         print "Set Color Cyan"
         setNewColor(ofColor(0,255,255))
     elif i==4:
-        print "Set Color Pink"
-        setNewColor(ofColor(255,20,147))
-    elif i==5:
-        print "Set Color Purple"
+        print "Set Color Magenta"
         setNewColor(ofColor(255,0,255))
+    elif i==5:
+        print "Set Color Yellow"
+        setNewColor(ofColor(255,255,0))
     # elif i==6:
     #     print "Set Color Lavender"
     #     setColors(ofColor(230,230,250))

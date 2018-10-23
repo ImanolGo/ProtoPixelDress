@@ -37,7 +37,6 @@ def setup():
     rainbow = rainbow.Rainbow(size,size)
     square = square.Square(size,size)
     setupShader()
-    setupFbo()
     
 
 def update():

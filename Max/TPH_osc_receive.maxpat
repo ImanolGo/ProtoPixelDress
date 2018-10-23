@@ -38,6 +38,19 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-23",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 451.0, 126.0, 99.0, 22.0 ],
+					"style" : "",
+					"text" : "udpreceive 2345"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-22",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -57,7 +70,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 114.0, 493.0, 100.0, 22.0 ],
 					"style" : "",
-					"text" : "/tph/touched 4"
+					"text" : "/tph/touched 5"
 				}
 
 			}
@@ -531,9 +544,9 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 308.0, 175.0, 99.0, 22.0 ],
+					"patching_rect" : [ 308.0, 175.0, 106.0, 22.0 ],
 					"style" : "",
-					"text" : "udpreceive 2345"
+					"text" : "udpreceive 23456"
 				}
 
 			}

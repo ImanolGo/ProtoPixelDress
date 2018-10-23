@@ -15,6 +15,9 @@ class Sparkles:
         self.color = ofColor(255)
         self.currentAlpha = 1.0
         self.targetAlpha = 1.0
+        self.elapsedTime = 0.0
+        self.one_day_in_seconds = 60*60*24
+        self.speed = 0.02
         self.setup()
 
 
@@ -22,9 +25,14 @@ class Sparkles:
         self.setupShader()
 
     def update(self):
+        self.updateTime()
         self.updateAlpha()
         self.updateFbo()
 
+    def updateTime(self):
+        self.elapsedTime += ofGetLastFrameTime()
+        if self.elapsedTime > self.one_day_in_seconds:
+            self.elapsedTime-= self.one_day_in_seconds
 
     def updateFbo(self):
         self.fbo.begin()
@@ -56,7 +64,7 @@ class Sparkles:
         if self.shader.isLoaded():
             self.shader.begin()
             self.shader.setUniform4f('iColor', r,g,b, a)
-            self.shader.setUniform1f('iGlobalTime', ofGetElapsedTimef()*0.02)
+            self.shader.setUniform1f('iGlobalTime', self.elapsedTime*self.speed)
             self.shader.setUniform3f('iResolution', float(self.width), float(self.height),0.0)
             ofDrawRectangle(-self.width/2.,-self.height/2.,self.width,self.height)
             #self.fbo.draw(0,0)
