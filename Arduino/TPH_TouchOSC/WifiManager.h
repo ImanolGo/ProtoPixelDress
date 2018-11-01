@@ -56,6 +56,8 @@ class WifiManager
 
     void sendReleased(int i);
 
+    void sendData(int i, int value);
+
     static void callbackAutodiscovery(OSCMessage& m);
 
   private:
@@ -244,6 +246,27 @@ void WifiManager::sendTouched(int i)
 //      msg.addArgInt32(i);
 //      osc.send(msg);
 }
+
+void WifiManager::sendData(int i, int value)
+{
+    // if(!is_connected) return;
+
+     OSCMessage msg("/tph/data");
+     msg.add(i);
+     msg.add(value);
+     udp.beginPacket(ipSend, SEND_PORT);
+     msg.send(udp);
+     udp.endPacket();
+     msg.empty();
+    
+
+//      OSCMessage msg;
+//      msg.beginMessage(ip.c_str(), SEND_PORT);
+//      msg.setOSCAddress("/tph/touched");
+//      msg.addArgInt32(i);
+//      osc.send(msg);
+}
+
 
 void WifiManager::sendReleased(int i)
 {

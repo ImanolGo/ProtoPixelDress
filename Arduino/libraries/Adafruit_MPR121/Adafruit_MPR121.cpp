@@ -49,7 +49,8 @@ boolean Adafruit_MPR121::begin(uint8_t i2caddr) {
   writeRegister(MPR121_MHDF, 0x01);
   writeRegister(MPR121_NHDF, 0x05);
   writeRegister(MPR121_NCLF, 0x01);
-  writeRegister(MPR121_FDLF, 0x00);
+  //writeRegister(MPR121_FDLF, 0x00);
+  writeRegister(MPR121_FDLF, 0xFF);
 
   writeRegister(MPR121_NHDT, 0x00);
   writeRegister(MPR121_NCLT, 0x00);

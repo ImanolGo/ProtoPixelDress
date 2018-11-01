@@ -26,6 +26,8 @@ circles = imp.load_source('circles',circles_file)
 
 
 OSC_DEST_IP = "localhost"
+OSC_BROADCAST_IP = "192.168.8.255"
+OSC_BROADCAST_PORT =  2346
 OSC_DEST_PORT = 2345
 
 # To send OSC messages we need an OSC Client
@@ -48,7 +50,7 @@ colorIndex = 0
 modeIndex = 0
 
 
-content.add_parameter("gamma", min=0.0, max=1.0, value=0.4)
+content.add_parameter("gamma", min=0.0, max=1.0, value=0.6)
 content.add_parameter("enableSparkles", value=True)
 content.add_parameter("enableRainbow", value=True)
 content.add_parameter("enableFade", value=True)
@@ -111,9 +113,9 @@ def updateTime():
         #     touched(modeIndex + 7)
         #     print "Changed Mode"
 
-        mode = randint(7,11)
+        mode = randint(0,4)
         touched(mode)
-        color = randint(0,6)
+        color = randint(5,11)
         touched(color)
         print "changedModeColor"
         
@@ -254,52 +256,49 @@ def touched(i):
 
     elapsedTime = 0.0
 
-    if i==0:
+    if i==11:
         print "Set Color Red"
         setNewColor(ofColor(255,0,0))
-    elif i==1:
+    elif i==9:
         print "Set Color Green"
         setNewColor(ofColor(0,255,0))
-    elif i==2:
+    elif i==7:
         print "Set Color Blue"
         setNewColor(ofColor(0,0,255))
-    elif i==3:
+    elif i==8:
         print "Set Color Cyan"
         setNewColor(ofColor(0,255,255))
-    elif i==4:
+    elif i==6:
         print "Set Color Magenta"
         setNewColor(ofColor(255,0,255))
-    elif i==5:
+    elif i==10:
         print "Set Color Yellow"
         setNewColor(ofColor(255,255,0))
-    # elif i==6:
-    #     print "Set Color Lavender"
-    #     setColors(ofColor(230,230,250))
-    elif i==6:
+    elif i==5:
         print "Set Color White"
         setNewColor(ofColor(255,255,255))
 
-    elif i==7:
+    elif i==1:
         print "Set Sparkles"
         setAlphas(0)
         sparkles.setAlpha(1)
 
-    elif i==8:
+    elif i==0:
         print "Set Rainbow"
         setAlphas(0)
         rainbow.setAlpha(1)
 
-    elif i==9:
+    elif i==3:
         print "Set Fade"
         setAlphas(0)
         fade.setAlpha(1)
 
-    elif i==10:
+    elif i==2:
         print "Set Waves"
         setAlphas(0)
         waves.setAlpha(1)
 
-    elif i==11:
+    elif i==4:
         print "Set Circles"
         setAlphas(0)
         circles.setAlpha(1)
@@ -318,8 +317,12 @@ def released(i):
 
 
 @content.OSC('/tph/autodiscovery')
-def loopDrumsOSC(i):
-    print "/tph/autodiscovery " + str(i) 
+def sendAutodiscovery(i):
+    print "/tph/autodiscovery " + str(i)
+    message = OSCMessage() #Create the OSC Message
+    message.setAddress("/tph/autodiscovery") #Define the OSC Address
+    message.append(int(i))
+    oscclient.sendto(message,(OSC_BROADCAST_IP,OSC_BROADCAST_PORT)) #send osc message
 
 
 @content.parameter_changed('enableWaves')
@@ -344,13 +347,13 @@ def parameter_changed(value):
 def parameter_changed(value):
     setAlphas(0)
     fade.setAlpha(value)
-    print "Fade: ", fade
+    print "Fade: ", value
 
 @content.parameter_changed('enableCircles')
 def parameter_changed(value):
     setAlphas(0)
     circles.setAlpha(value)
-    print "Circles: ", circle
+    print "Circles: ", value
 
 def setupShader():
 

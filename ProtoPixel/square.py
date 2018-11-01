@@ -27,7 +27,7 @@ class Square:
         self.updateFbo()
 
     def updateAlpha(self):
-        self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.05
+        self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.1
         self.color.a = int(self.currentAlpha*255)
 
     def updateFbo(self):

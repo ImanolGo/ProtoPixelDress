@@ -36,7 +36,8 @@ class Circles:
 
     def updateAlpha(self):
         self.currentAlpha = self.currentAlpha + (self.targetAlpha - self.currentAlpha)*0.05
-        self.color.a = int(self.currentAlpha*255)
+        p = -( self.currentAlpha * (self.currentAlpha - 2))
+        self.color.a = int(p*255)
 
     def updateFbo(self):
         self.fbo.begin()

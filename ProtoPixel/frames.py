@@ -52,7 +52,7 @@ def updateColor():
     global color, currentAlpha, targetAlpha
     setColors(color)
 
-    currentAlpha = currentAlpha + (targetAlpha - currentAlpha)*0.05
+    currentAlpha = currentAlpha + (targetAlpha - currentAlpha)*0.1
     
     if currentAlpha > 1.0:
         currentAlpha = 1.0

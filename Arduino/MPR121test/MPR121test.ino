@@ -27,10 +27,10 @@ uint16_t lasttouched = 0;
 uint16_t currtouched = 0;
 
 void setup() {
-  while (!Serial);        // needed to keep leonardo/micro from starting too fast!
+  //while (!Serial);        // needed to keep leonardo/micro from starting too fast!
 
-  Serial.begin(9600);
-  //delay(2000);
+  Serial.begin(115200);
+  delay(2000);
   Serial.println("Adafruit MPR121 Capacitive Touch sensor test"); 
   
   // Default address is 0x5A, if tied to 3.3V its 0x5B
@@ -39,6 +39,8 @@ void setup() {
     Serial.println("MPR121 not found, check wiring?");
     while (1);
   }
+
+  cap.setThresholds(1,1);
   Serial.println("MPR121 found!");
 }
 
@@ -73,7 +75,7 @@ void loop() {
 //  Serial.println();
 
   // comment out this line for detailed data from the sensor!
-  return;
+  //return;
   
   // debugging info, what
   Serial.print("\t\t\t\t\t\t\t\t\t\t\t\t\t 0x"); Serial.println(cap.touched(), HEX);
@@ -89,5 +91,5 @@ void loop() {
   Serial.println();
   
   // put a delay so it isn't overwhelming
-  delay(100);
+  delay(50);
 }
